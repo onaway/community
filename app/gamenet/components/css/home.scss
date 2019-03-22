@@ -1,0 +1,131 @@
+
+//定义单行省略号 
+@mixin singleLine{
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+//定义双行省略号
+@mixin doubleLine{
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+}
+
+/*顶部*/
+.header{
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 0.88rem;
+    font-size: 18px;
+    color: #fff;
+    text-align: center;
+    line-height: 0.88rem;
+    background: #c70019;
+    z-index: 99;
+    .ico-top{
+        position: absolute;
+        top: 50%;
+        margin-top: -0.23rem;
+        height: 0.46rem;
+        // background-repeat: no-repeat;
+        background-size: 6.4rem 4.8rem;
+        background-image: url('/static/img/icon.png');
+        &.my{
+            width: 0.44rem;
+            left: 0.3rem;
+            background-position: -0.21rem -0.20rem;
+        }
+        &.notice{
+            width: 0.4rem;
+            right: 0.3rem;
+            background-position: -1.02rem -1.8rem;
+        }
+        .hint{
+            position: absolute;
+            right: -0.1rem;
+            bottom: 0.4rem;
+            width: 8px;
+            height: 8px;
+            border-radius: 100%;
+            background: #f1e900;
+            // border: 1px solid #f1e900;
+        }
+    }
+}
+
+/*置顶和精华*/
+.set-top,.cream{
+    display: flex;
+    position: relative;
+    height: 0.8rem;
+    line-height: 0.8rem;
+    font-size: 16px;
+    padding-right: 0.25rem;
+    background: #fff;
+    z-index: 9;
+    em{
+        // float: left;
+        color: #c70019;
+        margin: 0 0.15rem 0 0.25rem;
+    }
+    span{
+        float: left;
+        width: 1px;
+        height: 0.52rem;
+        margin: 0.14rem 0.15rem 0 0;
+        background: #c70019;
+    }
+    p{
+        @include singleLine;
+    }
+}
+.set-top,.cream{
+    border-bottom: 1px solid #e2e2e2;
+}
+.space{
+    height: 0.88rem;
+}
+
+/*发表话题*/
+.publish{
+    position: fixed;
+    right: 0.2rem;
+    bottom: 0.2rem;
+    width: 1.3rem;
+    height: 1.3rem;
+    background-image: url('/static/img/icon.png');
+    background-size: 6.4rem 4.8rem;
+    background-position: -4.15rem -0.15rem;
+    z-index: 9;
+}
+
+.mint-loadmore{
+    overflow: visible;
+}
+//下拉刷新转圈图片样式
+.mint-loadmore-top img{
+    width: 0.6rem;
+    height: 0.6rem;
+}
+
+//组件淡入淡出样式
+.fade-enter-active, .fade-leave-active {
+    transition: opacity .5s;
+}
+.fade-enter, .fade-leave-active {
+    opacity: 0;
+}
+
+.scale-enter-active, .scale-leave-active {
+    transition: transform .3s;
+}
+.scale-enter,.scale-leave-to{
+    transform:  scale(0);
+}
+.scale-enter-to,.scale-leave{
+    transform:  scale(1);
+}

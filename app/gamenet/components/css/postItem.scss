@@ -1,0 +1,192 @@
+.post-item{
+    position: relative;
+    font-size: 16px;
+    margin-top: 0.1rem;
+    padding: 0.3rem 0.3rem 0;
+    background: #fff;
+    .hasdata{
+        .post-user{
+            position: relative;
+            margin-bottom: 0.2rem;
+            height: 0.82rem;
+            img{
+                float: left;
+                width: 0.82rem;
+                height: 0.82rem;
+                margin-right: 0.2rem;
+                border-radius: 50%;
+                object-fit: cover;
+            }
+            .post-user-con{
+                float: left;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                height: 100%;
+                line-height: 1.4;
+                h2{
+                    color: #000;
+                    font-size: 16px;
+                    font-weight: bold;
+                }
+                .official{
+                    color: #ff8200;
+                }
+                
+                
+                span{
+                    font-size: 14px;
+                    color: #949494;
+                }
+            }
+            i{
+                float: left;
+                width: 0.56rem;
+                height: 0.34rem;
+                margin: 0.05rem 0 0 0.1rem;
+                background-image: url('/static/img/icon.png');
+                background-size: 6.4rem 4.8rem;
+            }
+            .icon-official{
+                background-position: -5.72rem -3.44rem;
+            }
+            .icon-hot{
+                background-position: -3.32rem -1.88rem;
+            }
+            .spot{
+                position: absolute;
+                right: 0;
+                top: 10%;
+                width: 0.46rem;
+                height: 0.34rem;
+                background-image: url('/static/img/icon.png');
+                background-size: 6.4rem 4.8rem;
+                background-position: -5.77rem -1.84rem;
+            }
+        }
+        .post-content{
+            padding-bottom: 0.2rem;
+            border-bottom: 1px solid #e2e2e2;
+            .con{
+                margin-bottom: 0.2rem;
+                white-space: pre-wrap;
+                word-wrap: break-word;
+                .emoticon{
+                    display: inline-block;
+                    width: 25px;
+                    height: 25px;
+                    background-size: 5.76rem 5.76rem;
+                    background-image: url('/static/img/sanguo-emoji.png');
+                }
+            }
+            @at-root .single-pic{
+                li{
+                    &.pic-width{
+                        img{
+                            width: 100%;
+                            height: auto;
+                        }
+                    }
+                    &.pic-height{
+                        img{
+                            width: auto;
+                            height: 3.9rem;
+                            // margin-left: 1rem;
+                        }
+                    }
+                }
+                .failed-img{
+                    width: 2.24rem;
+                    height: 2.24rem;
+                    img{
+                        width: 100%;
+                        height: 100%;
+                    }
+                }
+            }
+            @at-root .four-pic{
+                li{
+                    float: left;
+                    width: 2.24rem;
+                    height: 2.24rem;
+                    margin: 0 0.09rem 0.09rem 0;
+                    &:nth-child(2){
+                        margin-right: 1rem;
+                    }
+                    img{
+                        width: 100%;
+                        height: 100%;
+                        margin-right: 0.09rem;
+                        object-fit: cover;
+                    }
+                }
+            }
+            @at-root .pic-list{
+                li{
+                    float: left;
+                    width: 2.24rem;
+                    height: 2.24rem;
+                    margin: 0 0.09rem 0.09rem 0;
+                    &:nth-child(3n){
+                        margin-right: 0;
+                    }
+                    img{
+                        width: 100%;
+                        height: 100%;
+                        object-fit: cover;
+                    }
+                }
+            }
+        }
+        @at-root .post-box{
+            height: 0.8rem;
+            ul{
+                height: 100%;
+                li{
+                    display: flex;
+                    float: left;
+                    width: 33.33%;
+                    height: 100%;
+                    font-size: 13px;
+                    align-items: center;
+                    justify-content: center;
+                    i{
+                        width: 0.32rem;
+                        height: 0.32rem;
+                        margin-right: 0.05rem;
+                        background-image: url('/static/img/icon.png');
+                        background-size: 6.4rem 4.8rem;
+                        &.icon-share{
+                            // background:url('/static/img/icon-share.png')no-repeat left top/cover;
+                            background-position: -3.46rem -1.04rem;
+                        }
+                        &.icon-comment{
+                            background-position: -2.66rem -1.04rem;
+                        }
+                        &.icon-zan{
+                            background-position: -5.84rem -0.25rem;
+                        }
+                        &.on{
+                            background-position: -5.84rem -1.05rem;
+                        }
+                    }
+                    span{
+                        margin-top: 0.02rem;
+                    }
+                }
+            }
+        }
+    }
+    .nodata{
+        padding-bottom: 0.3rem;
+        input{
+            float: right;
+            color: #2E9FFE;
+            line-height: 1;
+            padding: 0.1rem 0.2rem;
+            border: none;
+            outline: none;
+            background: #fff;
+        }
+    }
+}

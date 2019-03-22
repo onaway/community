@@ -1,0 +1,161 @@
+.comment-item{
+    padding: 0.15rem 0.3rem 0;
+    background: #fff;
+    border-bottom: 1px solid #e2e2e2;
+    i{
+        background-image: url('/static/img/icon.png');
+        background-size: 6.4rem 4.8rem;
+    }
+    /*一级用户信息*/
+    .comment-first-user{
+        position: relative;
+        margin-bottom: 0.2rem;
+        height: 0.8rem;
+        img{
+            float: left;
+            width: 0.8rem;
+            height: 0.8rem;
+            margin-right: 0.2rem;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+        .user-con{
+            float: left;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            height: 100%;
+            line-height: 1.4;
+            h2{
+                font-size: 14px;
+                font-weight: bold;
+                color: #727176;
+            }
+            .official{
+                color: #ff8200;
+            }
+            p{
+                font-size: 12px;
+                color: #949494;
+                span:first-child{
+                    margin-right: 0.2rem;
+                }
+            }
+        }
+        @at-root .ico{
+            float: left;
+            width: 0.56rem;
+            height: 0.34rem;
+            margin: 0.04rem 0 0 0.1rem;
+        }
+        .icon-lz{
+            background-position: -1.71rem -1.88rem;
+        }
+        .icon-hot{
+            background-position: -2.52rem -1.88rem;
+        }
+        ul{
+            display: flex;
+            position: absolute;
+            right: 0;
+            top: 0;
+            i{
+                display: inline-block;
+                width: 0.34rem;
+                height: 0.34rem;
+                &.icon-zan{
+                    background-position: -5.84rem -0.25rem;
+                }
+                &.on{
+                    background-position: -5.84rem -1.05rem;
+                }
+                &.icon-comment{
+                    background-position: -2.66rem -1.03rem;
+                }
+            }
+            span{
+                color: #949494;
+                vertical-align: 20%;
+                &:last-child{
+                    margin-right: 0.2rem;
+                }
+            }
+        }
+    }
+    .comment-con{
+        word-break: break-all;
+        margin-bottom: 0.1rem;
+    }
+    
+    /*二级用户信息*/
+    .comment-container{
+        margin-bottom: 0.2rem;
+        background: #f7f7f7;
+        .reply{
+            word-break: break-all;
+        }
+        .on{
+            color: #2e9ffe;
+        }
+        @at-root .comment-sec-user{
+            padding:0.1rem 0.2rem 0;
+            &:last-child{
+                padding: 0.1rem 0.2rem;
+            }
+            .comment-user-box{
+                font-size: 12px;
+                li{
+                    float: left;
+                    color: #949494;
+                }
+                .comment-user-name{
+                    font-size: 14px;
+                    color:#2e9ffe;
+                }
+                .day{
+                    margin: 0.04rem 0.2rem 0;
+                }
+                .hour{
+                    margin-top: 0.04rem;
+                }
+                .icon-lz{
+                    float: left;
+                    width: 0.56rem;
+                    height: 0.34rem;
+                    margin: 0.03rem 0 0 0.1rem;
+                    background-position: -1.71rem -1.88rem;
+                }
+                .comment-zan{
+                    float: right;
+                    height: 0.34rem;
+                    .icon-zan{
+                        display: inline-block;
+                        width: 0.34rem;
+                        height: 100%;
+                        margin-top: 0.05rem;
+                        background-position: -5.84rem -0.25rem;
+                        &.on{
+                            background-position: -5.84rem -1.05rem;
+                        }
+                    }
+                    span{
+                        font-size: 13px;
+                        vertical-align: 20%;
+                    }
+                }
+            }
+        }
+        .active{
+            overflow: hidden;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+        }
+    }
+    .more-comment{
+        line-height: 1;
+        text-align: right;
+        padding-bottom: 0.15rem;
+        color:#2E9FFE;
+    }
+}
