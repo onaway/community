@@ -42,7 +42,7 @@ export default {
         ...mapGetters(['commentData'])  //vuex获取数据
     },
     methods: {
-        ...mapActions(['delPostReplyData']),
+        ...mapActions(['delPostReplyData','delMessageReply']),
         toCommentBox: function () {     //进入评论组件
             if( this.user ){
                 this.$router.push({path:'/commentbox'});
@@ -95,8 +95,9 @@ export default {
                 Toast('删除成功');
                 let reply = {};
                 reply.cid = this.commentData.list.cid;
-                reply.becid = this.commentData.list.becid
-                this.delPostReplyData(reply);
+                reply.becid = this.commentData.list.becid;
+                if( this.$route.name == 'CommentDetail' )this.delPostReplyData(reply);
+                if( this.$route.name == 'PostText' )this.delMessageReply(reply.cid);
                 this.$emit('delcom',this.commentData);      //删除评论自定义事件
             }
         },

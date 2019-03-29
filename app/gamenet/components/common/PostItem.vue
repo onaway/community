@@ -14,7 +14,7 @@
 
             <!-- 举报分享收藏删除组件 -->
             <transition name="fade" mode="out-in">
-                <tip-item v-show="isShow" :tipData="lists" :index="index" :collection="collection" :homeTipItemShow="homeTipItemShow" @transferval="transferValue" 
+                <tip-item class="tip-item" v-show="isShow" :tipData="lists" :index="index" :collection="collection" :homeTipItemShow="homeTipItemShow" @transferval="transferValue" 
                 @hidetip="hideTipItem" @reducetop="reduceTopic" @deltop="delTopic" @addcol="addCollection" @reducecol="reduceCollection"></tip-item>
             </transition>
 
@@ -144,7 +144,7 @@ export default {
         }
     },
     methods: {
-        ...mapActions(['changeWxStatus','changeHomePraise','changePersonalPraise']),
+        ...mapActions(['changeWxStatus','changeHomePraise','changePersonalPraise','changeCollectPraise']),
         watchZan:function(){                //监听赞的变化  
             this.api.in_array;
             if(this.api.in_array(this.lists.tid,this.t_zan)){    
@@ -231,10 +231,11 @@ export default {
             }
         },
         CbPraise: function(res){            //赞和取消赞返回的接口数据
-            console.log(res);
+            // console.log('postItem:',res);
             if( res.code == 1 ){
                 this.changeHomePraise(this.lists.tid);      //将tid存至vuex中进行数据操作
                 this.changePersonalPraise(this.lists.tid);
+                this.changeCollectPraise(this.lists.tid);
                 // if( this.isTrue ){
                 //     this.lists.zan --;
                 // }else{
@@ -279,7 +280,7 @@ export default {
         del: function(index){               //删除已经被删除的话题的通知
             this.delForm.uid = this.user;
             this.delForm.tid = this.collection[index];
-            console.log('tid:',this.delForm.tid);
+            // console.log('tid:',this.delForm.tid);
             this.collection.splice(index,1);
             if( this.delForm.uid =='' || this.delForm.tid =='' )return false;
             this.api.post('community.lang.topic.delLose',this.delForm,this.CbDelData);
@@ -372,5 +373,8 @@ export default {
     }
     .fade-enter, .fade-leave-active {
         opacity: 0
+    }
+    .tip-item{
+        position: absolute;
     }
 </style>

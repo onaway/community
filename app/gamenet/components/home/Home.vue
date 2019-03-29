@@ -110,8 +110,8 @@ export default {
         }else{      //有数据获取缓存数据
             this.initPage = true;
             this.form.page = this.page;
-            console.log('page:',this.form.page);
-            if( this.tz.length < (10*this.form.page) ){      
+            // console.log('有缓存数据 tz:',this.tz.length);
+            if( this.isHomeLoadmore ){       //若本来就到底了，则返回时不上拉加载
                 this.$refs.infiniteLoading.$emit('$InfiniteLoading:loaded');
                 this.$refs.infiniteLoading.$emit('$InfiniteLoading:complete');
             }
@@ -125,7 +125,7 @@ export default {
         this.wxShare.wx_share(desc,url,imgUrl);
     },
     computed:{
-        ...mapGetters(['homeData','tz','page','isRefreshHomeData'])
+        ...mapGetters(['homeData','tz','page','isRefreshHomeData','delStatus','isHomeLoadmore'])
     },
     beforeRouteLeave(to, from, next) {
         if( to.name == 'MessageCenter' ){
@@ -144,13 +144,13 @@ export default {
         '$route' (to, from) {}
     },
     methods:{
-        ...mapActions(['setHomeData','clearHomeData','setNoticeTip']),
+        ...mapActions(['setHomeData','clearHomeData','setNoticeTip','setHomeLoadStatus']),
         getDataList: function(){            //获取接口数据
             this.form.page = 1;
             this.api.post('community.data.detail.index',this.form,this.CbHomeData);
         },
         onInfinite: function(){             //触发上拉加载方法
-            console.log('onInfinite');
+            // console.log('onInfinite');
             if(!this.initPage)return false;
             setTimeout(()=>{
                 if(this.form.page >= 1){  
@@ -160,7 +160,7 @@ export default {
             },500)
         },
         CbHomeData: function(res){          //有uid回调的接口数据
-            console.log('主页接口数据:',res.data);
+            // console.log('主页接口数据:',res.data);
             if (res.code == 1) {            // 如果查询结果为真
                 for( let key in res.data.cream ){       //如果帖子被删除，则删除数组中空白的数据
                     if (Object.keys( res.data.cream[key] ).length == 0) {       //判断空对象
@@ -184,9 +184,16 @@ export default {
                     //$emit触发$InfiniteLoading:loaded事件 或$state.loaded();$state从onInfinite($state)函数参数中传
                     this.$refs.infiniteLoading.$emit('$InfiniteLoading:loaded');
                     this.watchNotice();
-                    console.log('home tz:',this.tz);
-                    if( this.tz.length < (10*this.form.page) ){        //如果帖子总条数小于10*页数则数据加载完成
-                        this.$refs.infiniteLoading.$emit('$InfiniteLoading:complete');
+                    // console.log('home tz:',this.tz);
+                    /*
+                        因为有去重所以此方法不适用
+                        if( this.tz.length < (10*this.form.page) ){        //如果帖子总条数小于10*页数则数据加载完成
+                            this.$refs.infiniteLoading.$emit('$InfiniteLoading:complete');
+                        }
+                    */
+                    if( res.data.tz < 10 ) {
+                        this.$refs.infiniteLoading.$emit('$InfiniteLoading:complete'); //如果本页数据<10则到底了
+                        this.setHomeLoadStatus();
                     }
                 }else{
                     if( this.tz.length > 0 ){
@@ -194,6 +201,11 @@ export default {
                     }
                     this.$refs.infiniteLoading.$emit('$InfiniteLoading:complete'); //没有数据显示没有更多
                 }
+
+                // if( this.tz.length < (10*this.form.page) ){      
+                //     this.$refs.infiniteLoading.$emit('$InfiniteLoading:loaded');
+                //     this.$refs.infiniteLoading.$emit('$InfiniteLoading:complete');
+                // }
             }
         },
         loadTop: function(){                //组件提供的下拉触发方法
@@ -244,7 +256,6 @@ export default {
             }else{          //有标点符号
                 if( /[\n\r]/.test(contentstr) ){            //匹配第一个换行符
                     var str = contentstr.replace(/[\n\r]/,'');
-                    // console.log('str',str);
                     if( /([。！？.])/i.test(contentstr) ){
                         var n = contentstr.search(/([。！？.])/i);     //获取标点符号的索引值
                         return contentstr.substring(0,n);

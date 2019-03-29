@@ -27,7 +27,6 @@ let state = {
 }
 
 let copyState = api.deepCopy(state);  //拷贝state对象
-console.log('top personal copyState:',copyState);
 
 export default {
     state: state,
@@ -63,9 +62,16 @@ export default {
                 state[i] = copyState[i]  // 递归赋值
             }
         },
-        CHANGE_PERSONAL_PRAISE(state,_tid){ //改变帖子详情页帖子赞的状态，个人中心相应帖子及赞的数量随之改变
+        CLEAR_COLLECT_DATA(state){          //清除收藏数据
+            // console.log('clear collect');
+            state.collectionData = { f_data:[],hd:[],myCollection:[],tzan:[] };
+            state.collect = [];
+            state.collectionPage = '1';
+            // console.log('collect state:',state);
+        },
+        CHANGE_PERSONAL_PRAISE(state,_tid){ //改变帖子详情页帖子赞的状态，个人中心坏相应帖子及赞的数量随之改变
             // console.log('personal state.topicData.tzan.length:',state.topicData.tzan.length,' _tid:',_tid);
-            if( state.topicData.tzan.length > 0 ){      //缓存有数据才操作
+            if( state.topicData.f_data.length > 0 ){      //缓存有数据才操作
                 let index = state.topicData.tzan.indexOf(_tid);      //_tid在tzan数组中的索引，无则返回-1
                 let tids = state.topic.map( item => item.tid );  
                 let num = tids.indexOf(_tid);          //_tid在topic数组中的索引
@@ -81,8 +87,24 @@ export default {
                 }
             }
         },
-        CHANGE_PERSONAL_COLLECT(state,_tid){ //改变个人中心页相应帖子的收藏或取消收藏的文字
-            if( state.topicData.myCollection.length > 0 ){      //缓存有数据才操作
+        CHANGE_COLLECT_PRAISE(state,_tid){  //改变帖子详情页帖子赞的状态，个人中心收藏相应帖子及赞的数量随之改变
+            if( state.collectionData.f_data.length > 0 ){      //缓存有数据才操作
+                let index = state.collectionData.tzan.indexOf(_tid);      //_tid在tzan数组中的索引，无则返回-1
+                let tids = state.collect.map( item => item.tid );  
+                let num = tids.indexOf(_tid);          //_tid在collect数组中的索引
+                if( num > -1 ){             //只有帖子数组中有tid，即num != -1,才进行操作
+                    if( index == -1 ){      //没有此元素则增加，有则删除,赞的值相应的+1/-1
+                        state.collectionData.tzan.push(_tid);
+                        state.collect[num].zan = parseInt(state.collect[num].zan) + 1;
+                    }else{
+                        state.collectionData.tzan.splice(index,1);
+                        state.collect[num].zan = parseInt(state.collect[num].zan) - 1;
+                    }
+                }
+            }
+        },
+        CHANGE_PERSONAL_COLLECT(state,_tid){//改变个人中心页相应帖子的收藏或取消收藏的文字
+            if( state.topicData.f_data.length > 0 ){      //缓存有数据才操作
                 let index = state.topicData.myCollection.indexOf(_tid);      //_tid在t_zan数组中的索引，无则返回-1
                 let tids = state.topic.map( item => item.tid );  
                 let num = tids.indexOf(_tid);          //_tid在topic数组中的索引
@@ -93,6 +115,14 @@ export default {
                         state.topicData.myCollection.splice(index,1);
                     }
                 }
+            }
+        },
+        DEL_ONE_PERSONAL_DATA(state,_tid){  //删除帖子详情页帖子个人中心相应帖子删除（如果有缓存的话）
+            if( state.topic.length > 0 ){      //缓存有数据才操作
+                let tids = state.topic.map( item => item.tid );  
+                let num = tids.indexOf(_tid);          //_tid在topic数组中的索引
+                // console.log('_tid:',_tid,'tids:',tids, ' num:',num);
+                if( num > -1 )state.topic.splice(num,1);
             }
         },
     },
@@ -106,11 +136,20 @@ export default {
         clearPersonalData( {commit} ){      //清除个人中心数据
             commit('CLEAR_PERSONAL_DATA')
         },
-        changePersonalPraise( {commit},tid ){   //改变帖子详情页帖子赞的状态，个人中心相应帖子及赞的数量随之改变
+        clearCollectData( {commit} ){       //清除收藏数据
+            commit('CLEAR_COLLECT_DATA')
+        },
+        changePersonalPraise( {commit},tid ){   //改变帖子详情页帖子赞的状态，个人中心话题相应帖子及赞的数量随之改变
             commit('CHANGE_PERSONAL_PRAISE',tid)
+        },
+        changeCollectPraise( {commit},tid ){    //改变帖子详情页帖子赞的状态，个人中心收藏相应帖子及赞的数量随之改变
+            commit('CHANGE_COLLECT_PRAISE',tid)
         },
         changePersonalCollect( {commit},tid ){  //改变个人中心页相应帖子的收藏或取消收藏的文字
             commit('CHANGE_PERSONAL_COLLECT',tid)
+        },
+        delOnePersonalData( {commit},tid ){     //删除帖子详情页帖子个人中心相应帖子删除（如果有缓存的话）
+            commit('DEL_ONE_PERSONAL_DATA',tid)
         },
     }
 }

@@ -4,7 +4,7 @@
             <router-view class="router"></router-view>
         </transition> -->
         <router-view class="router"></router-view>
-        <button class="back-game" @click="backGame" v-if="api.inGame()">返回游戏</button>
+        <!-- <button class="back-game" @click="backGame" v-if="api.inGame()">返回游戏</button> -->
 
         <!-- <keep-alive>
             <router-view class="router" v-if="$route.meta.keepAlive"></router-view>
@@ -102,7 +102,8 @@ export default {
         border: none;
         outline: none;
         background: rgba(219,29,6,.6);
-        border-radius: 0 8px 8px 0; 
+        border-radius: 0 8px 8px 0;
+        z-index: 10;
     }
 
     //各个选择国家组件淡入淡出的样式

@@ -53,7 +53,7 @@ export default {
         ...mapGetters(['commentData','comingRouter'])  //vuex获取数据
     },
     mounted() {
-        console.log('this.comingRouter:',this.comingRouter);
+        // console.log('this.comingRouter:',this.comingRouter);
         this.user = this.api.islogin();
         this.emojiData = this.api.emojiData;
         this.comments = this.commentData.list;
@@ -145,9 +145,10 @@ export default {
             }
         },
         Cbcomments: function(res){     //评论回调接口
-            console.log('评论接口数据：',res.data);
+            // console.log('评论接口数据：',res.data);
             if( res.code == 1 ){
                 this.disabled = true;
+                res.data.cid = res.data.cid.toString();
                 if( this.comingRouter == 'PostText' ){
                     if( this.holdercontent == '说说你的看法...' ){  //若是评论帖子则清除数据否则不清除
                         this.changePostRefresh(true);
@@ -159,7 +160,7 @@ export default {
                     this.setComReplyData(res.data);     //保存评论成功数据到vuex中
                     this.setPostReplyData(res.data);
                 }
-                this.addHomeComment(this.comments.tid); //保存评论成功tid到vuex中
+                // this.addHomeComment(this.comments.tid); //保存评论成功tid到vuex中
                 Toast('评论成功');
                 setTimeout(()=>{
                     this.$router.go(-1);

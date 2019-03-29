@@ -69,6 +69,7 @@
 
 <script>
 import Toast from '@/components/toast/toast.js'
+import {mapActions} from 'vuex'
 export default {
     name: "Login",
     data: function() {
@@ -154,6 +155,7 @@ export default {
         }
     },
     methods: {
+        ...mapActions(['clearHomeData','clearPersonalData','clearPostData','clearDetailData']),
         sendCode1: function () {            //获取验证码
             var reg = /^1[3|4|5|7|8|9][0-9]{9}$/.test(this.telForm.mobile_phone);
             if( this.telForm.mobile_phone == '' ){   //手机号为空时
@@ -236,8 +238,13 @@ export default {
             }
         },
         CbPhoneLogin: function (res) {      //手机号登录回调的接口数据
-            console.log('手机号登录数据:',res);
+            // console.log('手机号登录数据:',res);
             if( res.code == 1 ){
+                //登录成功清除缓存数据
+                this.clearHomeData();       
+                this.clearPersonalData();
+                this.clearPostData();
+                this.clearDetailData();
                 this.disabled = true;   
                 //加密uid 用base64,需要用对象形式加密
                 let uidJson = {};
@@ -246,7 +253,7 @@ export default {
                 this.api.setCookie('uid',_uidJson,7);          //设置uid cookie
                 this.api.setCookie('myuser',res.data.token,7); //设置token cookie
                 this.api.setCookie('login_mobile',this.telForm.mobile_phone,7)  //存登录成功的手机号
-                if( res.data.new_account ){            //若账号强制修改
+                /*if( res.data.new_account ){            //若账号强制修改
                     this.api.setCookie('login_info',res.data,7)    //存‘账号名已修改’页面需要的的信息
                     this.$router.push({name: 'ResetAccount'});
                 }else{          //没改账号名
@@ -255,6 +262,11 @@ export default {
                     } else {
                         this.$router.push({path:'/'});
                     }
+                }*/
+                if (window.history.length > 1) {
+                    this.$router.go(-1);
+                } else {
+                    this.$router.push({path:'/'});
                 }
             }else{
                 this.disabled = false;
@@ -287,8 +299,13 @@ export default {
             }
         },
         CbAccountLogin: function(res){      //欢动账号登录回调的接口数据
-            console.log('欢动账号登录数据:',res);
+            // console.log('欢动账号登录数据:',res);
             if( res.code == 1 ){
+                //登录成功清除缓存数据
+                this.clearHomeData();       
+                this.clearPersonalData();
+                this.clearPostData();
+                this.clearDetailData();
                 this.disabled = true;
                 this.api.setCookie('password',this.hdForm.password,1);      //存密码，在账号选择页面或者认证手机页面有用到
                 if( res.data.many_account ){     //若账号手机号是同一个且uid不同，即many_account为true
@@ -303,7 +320,7 @@ export default {
                     this.api.setCookie('uid',_uidJson,7);          //设置uid cookie
                     this.api.setCookie('myuser',res.data.token,7); //设置token cookie
                     this.api.setCookie('bind_phone_account',res.data.account,1);    //绑定手机需要的账号
-                    if( res.data.new_account ){         //若账号强制修改
+                    /*if( res.data.new_account ){         //若账号强制修改
                         this.api.setCookie('login_account',res.data.new_account,7)  //存修改过的账号
                         this.api.setCookie('login_info',res.data,7);       //存‘账号名已修改’页面需要的的信息
                         this.$router.push({name: 'ResetAccount'});
@@ -317,6 +334,16 @@ export default {
                             } else {
                                 this.$router.push({path:'/'});
                             }
+                        }
+                    }*/
+                    this.api.setCookie('login_account',res.data.account,7);
+                    if( res.data.bind_phone == 0 ){     //若未绑定手机
+                        this.$router.push({name: 'Authentication'});
+                    }else{      //已绑定手机
+                        if (window.history.length > 1) {
+                            this.$router.go(-1);
+                        } else {
+                            this.$router.push({path:'/'});
                         }
                     }
                 }

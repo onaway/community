@@ -109,7 +109,7 @@ export default {
         next();
     },
     computed: {
-        ...mapGetters(['topicData','topic','topicPage','collectionData','collect','collectionPage'])  
+        ...mapGetters(['topicData','topic','topicPage','collectionData','collect','collectionPage','delStatus','isPerLoadmore'])  
     },
     created() {
         // window.scrollTo(0, 0);
@@ -134,14 +134,12 @@ export default {
     },
     mounted(){
         if( this.topic.length == 0 ){   //数据为空
-            console.log('数据为空');
             this.getDataList();
         }else{      //有数据
-            console.log('有数据');
+            // console.log('有数据');
             this.initPage = true;
             this.form.page = this.topicPage;
-            console.log('created page:',this.topicPage);
-            if( this.topic.length < (10*this.form.page) ){        
+            if( this.isPerLoadmore ){       //若本来就到底了，则返回时不上拉加载
                 this.$refs.infiniteLoading.$emit('$InfiniteLoading:loaded');
                 this.$refs.infiniteLoading.$emit('$InfiniteLoading:complete');
             }
@@ -154,24 +152,22 @@ export default {
         this.wxShare.wx_share(desc,url,imgUrl);
     },
     methods: {
-        ...mapActions(['setTopicData','setCollectionData','clearPersonalData']),
+        ...mapActions(['setTopicData','setCollectionData','clearPersonalData','clearTopicData','clearCollectData','setPersonalLoadStatus']),
         getDataList: function(){        //获取接口数据
             this.form.page = 1;
             this.api.post('community.data.detail.myindex',this.form,this.CbTopicData);
         },
         onInfinite: function(){         //触发上拉加载方法
-            console.log('loadmore');
             if(!this.initPage)return false;
             setTimeout(()=>{
                 if(this.form.page >= 1){  
                     this.form.page++;
                     this.api.post('community.data.detail.myindex',this.form,this.CbTopicData);
-                    console.log('aaa page:',this.form.page);
                 }
             },500)
         },
         CbTopicData: function(res){          //接口数据
-            console.log('个人中心数据:',res.data);
+            // console.log('个人中心数据:',res.data);
             if (res.code == 1) {           
                 this.initPage = true;
                 if (res.data.f_data.length) {       // 如果有数据则进入将新的数据与老的数据拼接
@@ -184,6 +180,7 @@ export default {
                     this.$refs.infiniteLoading.$emit('$InfiniteLoading:loaded');    //$emit触发$InfiniteLoading:loaded事件
                     if( this.topic.length < (10*this.form.page) ){        //如果帖子总条数小于10*页数则数据加载完成
                         this.$refs.infiniteLoading.$emit('$InfiniteLoading:complete');
+                        this.setPersonalLoadStatus();
                     }
                 }else{
                     if( this.topic.length > 0 ){
@@ -193,6 +190,11 @@ export default {
                     }
                     this.$refs.infiniteLoading.$emit('$InfiniteLoading:complete'); //没有数据显示没有更多
                 }
+
+                // if( this.topic.length < (10*this.form.page) ){        
+                //     this.$refs.infiniteLoading.$emit('$InfiniteLoading:loaded');
+                //     this.$refs.infiniteLoading.$emit('$InfiniteLoading:complete');
+                // }
             }
         },
         getCollectionData:function(){
@@ -209,7 +211,7 @@ export default {
             },500)
         },
         CbCollectionData:function(res){
-            console.log('收藏接口数据:',res);
+            // console.log('收藏接口数据:',res);
             if (res.code == 1) {           
                 this.initPage = true;
                 if (res.data.f_data.length) {       // 如果有数据则进入将新的数据与老的数据拼接
@@ -284,15 +286,18 @@ export default {
         tabShow: function(type){        //点击改变tab的样式
             this.active = type;
             // this.showTab = (type == "topic")?true:false;
-            if( type == "topic" ){
+            if( type == "topic" ){      //点击话题，清除收藏数据 
                 this.showTab = true;
-            }else{
+                this.clearCollectData();
+                this.getDataList();
+            }else{                      //点击收藏，清除话题数据
                 this.showTab = false;
                 if( this.collect.length == 0 ){   //数据为空,则获取接口
                     this.collectionForm.uid = this.comingUid;
                     this.collectionForm.myuid = this.user;
                     if( this.collectionForm.uid=='' )return false;
                     this.getCollectionData();
+                    this.getDataList();
                 }else{      //有数据，则用缓存数据
                     this.initPage = true;
                     this.collectionForm.page = this.collectionPage;

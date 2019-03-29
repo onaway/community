@@ -48,8 +48,6 @@ export default {
     created(){
         this.form.password = this.api.getCookie('password');
         this.form.account = this.api.getCookie('bind_phone_account');
-        console.log('password:',this.form.password);
-        console.log('account:',this.form.account);
     },
     methods: {
         sendCode1: function () {            //获取验证码
@@ -95,7 +93,7 @@ export default {
             this.api.post('community.user.login.sendMessage',this.form,this.CbSendCode);
         },
         CbSendCode: function (res){         //发送验证码回调的接口数据
-            console.log('res:',res);
+            // console.log('res:',res);
             if( res.code == 1 ){
                 this.yzm1 = false;          //获取验证码按钮隐藏
                 this.time = true;           //60s倒计时显示
@@ -127,7 +125,6 @@ export default {
                         if( !regCode ){         //验证码不对
                             Toast('请输入6位数字验证码');
                         }else{                  //验证码对
-                            // console.log('form:',this.form);
                             this.api.post('community.user.login.bindMobilePhone',this.form,this.CbBind);
                         }
                     }
@@ -135,7 +132,7 @@ export default {
             }
         },
         CbBind: function (res) {            //确认绑定回调的接口数据
-            console.log('绑定手机数据:',res);
+            // console.log('绑定手机数据:',res);
             if( res.code == 1 ){
                 Toast('手机认证成功');
                 this.$router.push({name: 'Home'});

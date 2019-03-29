@@ -26,7 +26,6 @@ export default {
     },
     created() {
         this.login_info = this.api.getCookie('login_info');
-        console.log('login_info:',this.login_info);
     },
     methods: {
         confirm(){

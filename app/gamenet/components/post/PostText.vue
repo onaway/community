@@ -8,7 +8,7 @@
 
         <!-- 举报分享收藏删除组件 -->
         <transition name="fade" mode="out-in">
-            <tip-item v-show="isShow" :tipData="postData.main" :collection="postData.myCollection" @transferval="transferValue" @hidetip="hideTipItem"></tip-item>
+            <tip-item class="tip-item" v-show="isShow" :tipData="postData.main" :collection="postData.myCollection" @transferval="transferValue" @hidetip="hideTipItem"></tip-item>
         </transition>
 
         <!-- <share></share> -->
@@ -95,13 +95,13 @@ export default {
             initPage:false,             //第一页开关
         };
     },
-    beforeRouteLeave(to, from, next) {      //当帖子详情页返回首页时，则清除帖子详情页存在vuex中的数据
-        if( to.name == 'Home' ) this.clearPostData();
+    beforeRouteLeave(to, from, next) {      //当帖子详情页返回首页和个人中心页时，则清除帖子详情页存在vuex中的数据
+        if( to.name == 'Home' || to.name == 'PersonalCenter' || to.name == 'MessageCenter' ) this.clearPostData();
         if( to.name == 'CommentBox' ) this.setComingRouter('PostText');
         next();
     },
     computed:{          //vuex获取数据
-        ...mapGetters(['wxShareShow','postData','comment','postReply','commentData','postPage','isRefreshPostData'])
+        ...mapGetters(['wxShareShow','postData','comment','postReply','commentData','postPage','isRefreshPostData','isPostLoadmore'])
     },
     created () {
         this.user = this.api.islogin();
@@ -112,14 +112,13 @@ export default {
     },
     mounted() {
         if( this.comment.length == 0 ){   //数据为空
-            console.log('数据为空');
             this.getDataList();
         }else{      //有数据
-            console.log('有数据 initPage:',this.initPage);
+            // console.log('有数据 initPage:',this.initPage);
             this.initPage = true;
             this.form.page = this.postPage;
-            if( this.comment.length < (10*this.form.page) ){
-                this.$refs.infiniteLoading.$emit('$InfiniteLoading:loaded'); 
+            if( this.isPostLoadmore ){       //若本来就到底了，则返回时不上拉加载
+                this.$refs.infiniteLoading.$emit('$InfiniteLoading:loaded');
                 this.$refs.infiniteLoading.$emit('$InfiniteLoading:complete');
             }
         }
@@ -139,13 +138,12 @@ export default {
         },300)
     },
     methods: {
-        ...mapActions(['setCommentData','setPostData','clearPostData','setComingRouter']),
+        ...mapActions(['setCommentData','setPostData','clearPostData','setComingRouter','setPostLoadStatus']),
         getDataList: function(){        //获取接口数据
             this.form.page = 1;
             this.api.post('community.data.detail.get',this.form,this.CbPostData);
         },
         onInfinite: function(){         //触发上拉加载方法
-            console.log('loadmore');
             if(!this.initPage)return false;
             setTimeout(()=>{
                 if(this.form.page >= 1){  
@@ -155,7 +153,7 @@ export default {
             },500)
         },
         CbPostData: function(res){      //帖子详情页的接口数据
-            console.log('帖子页数据：',res.data);
+            // console.log('帖子页数据：',res.data);
     
             if (res.code == 1) {            // 如果查询结果为真
                 this.initPage = true;
@@ -166,19 +164,25 @@ export default {
                         this.setPostData({data:res.data,type:'loadmore',page:this.form.page});
                     }
                     this.$refs.infiniteLoading.$emit('$InfiniteLoading:loaded');    //$emit触发$InfiniteLoading:loaded事件
-                    console.log('post comment:',this.comment);
-                    console.log('post reply:',this.postReply);
+                    // console.log('post comment:',this.comment);
+                    // console.log('post reply:',this.postReply);
                     if( this.comment.length < (10*this.form.page) ){        //如果帖子总条数小于10*页数则数据加载完成
                         this.$refs.infiniteLoading.$emit('$InfiniteLoading:complete');
+                        this.setPostLoadStatus();
                     }
                 }else{
                     if( this.comment.length > 0 ){
                         this.$refs.infiniteLoading.$emit('$InfiniteLoading:loaded');
                     }else{
-                        this.setPostData({data:res.data,type:'refresh',page:this.form.page})      //只有帖子正文，没有评论的情况
+                        this.setPostData({data:res.data,type:'refresh',page:this.form.page})      //只有评论，没有回复的情况下
                     }
                     this.$refs.infiniteLoading.$emit('$InfiniteLoading:complete'); //没有数据显示没有更多
                 }
+
+                // if( this.comment.length < (10*this.form.page) ){
+                //     this.$refs.infiniteLoading.$emit('$InfiniteLoading:loaded'); 
+                //     this.$refs.infiniteLoading.$emit('$InfiniteLoading:complete');
+                // }
             }else if( res.code === -20004 ){
                 this.showError = true;
             }
@@ -321,5 +325,8 @@ export default {
     }
     .fade-enter, .fade-leave-active {
         opacity: 0
+    }
+    .tip-item{
+        position: fixed;
     }
 </style>

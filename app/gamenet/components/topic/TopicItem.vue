@@ -19,8 +19,8 @@
                 <i class="icon-emoji" @click="showAllEmoji"></i>
                 <span :class="{'to-red':changeColor}">{{count}}字符</span>
 
-                <!-- <i class="icon-pic" :class="{'grey-pic':picStatus}" @click="triggerFileUpload" v-show="api.canUpload()"></i> -->
-                <i class="icon-pic" :class="{'grey-pic':picStatus}" @click="triggerFileUpload"></i>
+                <i class="icon-pic" :class="{'grey-pic':picStatus}" @click="triggerFileUpload" v-show="api.canUpload()"></i>
+                <!-- <i class="icon-pic" :class="{'grey-pic':picStatus}" @click="triggerFileUpload"></i> -->
 
             </div>
             <!-- 循环表情 -->
@@ -397,7 +397,7 @@ export default {
             }
         },
         Cbupload: function (res) {          //上传图片接口回调
-            console.log('上传图片接口数据:',res);
+            // console.log('上传图片接口数据:',res);
             if( res.code == 1 ){
                 this.num ++; 
                 // console.log('length:',this.length,' this.num',this.num);

@@ -115,7 +115,7 @@ export default {
             }
         },
         CbPraise: function(res){
-            console.log(res);
+            // console.log('res:',res);
             if( res.code == 1 ){
                 this.changeHomePraise(this.headerData.tid);     //将tid存至vuex中进行数据操作
                 this.changePersonalPraise(this.headerData.tid);

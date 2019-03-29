@@ -5,7 +5,7 @@ import abroad from './abroadRoutes'
 import path from '../api/packingPath.js'
 Vue.use(Router)
 
-console.log('build:',path.build);
+// console.log('build:',path.build);
 let build = path.build;
 let router = {};         //router只能外部定义
 if( build == 'abroad' || build == 'abroadprod' ){
@@ -21,7 +21,7 @@ if( build == 'abroad' || build == 'abroadprod' ){
             }
         },
     })
-    console.log('国外');
+    // console.log('国外');
 }else{
     router = new Router({
         mode: 'history',
@@ -35,7 +35,7 @@ if( build == 'abroad' || build == 'abroadprod' ){
             }
         },
     })
-    console.log('国内');
+    // console.log('国内');
 }
 
 // router.beforeEach((to, from, next) => {

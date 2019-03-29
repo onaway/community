@@ -54,13 +54,16 @@ export default {
             state.isRefreshHomeData = status;
         },
         DEL_ONE_HOME_DATA(state,_tid){      //帖子详情页右上角删除事件删除首页缓存相应的帖子
-            let tids = state.tz.map( item => item.tid );   //获取tid的数组集合
-            let num = tids.indexOf(_tid);          //获取_tid在tids数组中的索引
-            if( num > -1 )state.tz.splice(num,1);
+            if( state.tz.length > 0 ){
+                let tids = state.tz.map( item => item.tid );   //获取tid的数组集合
+                let num = tids.indexOf(_tid);          //获取_tid在tids数组中的索引
+                // console.log('_tid:',_tid,'tids:',tids, ' num:',num);
+                if( num > -1 )state.tz.splice(num,1);
+            }
         },
         CHANGE_HOME_PRAISE(state,_tid){     //改变首页及帖子详情页帖子赞的状态，首页相应帖子及赞的数量随之改变
             // console.log('home state.homeData.t_zan.length:',state.homeData.t_zan.length,' _tid:',_tid);
-            if( state.homeData.t_zan.length > 0 ){      //缓存有数据才操作
+            if( state.homeData.tz.length > 0 ){      //缓存有数据才操作
                 let index = state.homeData.t_zan.indexOf(_tid);      //_tid在t_zan数组中的索引，无则返回-1
                 let tids = state.tz.map( item => item.tid );  
                 let num = tids.indexOf(_tid);          //_tid在tz数组中的索引
@@ -86,7 +89,7 @@ export default {
             }
         },
         CHANGE_HOME_COLLECT(state,_tid){    //改变首页相应帖子的收藏或取消收藏的文字
-            if( state.homeData.myCollection.length > 0 ){      //缓存有数据才操作
+            if( state.homeData.tz.length > 0 ){      //缓存有数据才操作
                 let index = state.homeData.myCollection.indexOf(_tid);      //_tid在t_zan数组中的索引，无则返回-1
                 let tids = state.tz.map( item => item.tid );  
                 let num = tids.indexOf(_tid);//_tid在tz数组中的索引

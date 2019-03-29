@@ -103,7 +103,7 @@ export default {
             }
         },
         CbReplyPraise: function(res){
-            console.log(res);
+            // console.log('res:',res);
             if( res.code == 1 ){
                 let reply = {};
                 reply.cid = this.replies.cid;

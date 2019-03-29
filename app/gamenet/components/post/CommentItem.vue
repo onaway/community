@@ -83,7 +83,7 @@ export default {
         },
     },
     methods: {
-        ...mapActions(['setCommentData','changePostPraise']),
+        ...mapActions(['setCommentData','changePostCommentPraise']),
         changeSrc: function(){              //头像的路径
             if( typeof(this.reps.head.img) === 'undefined' ){
                 return '/static/img/failed.jpg';
@@ -157,7 +157,7 @@ export default {
                     this.api.post('community.lang.topic.zan',this.praiseForm,this.CbCommentPraise);
 
                 }else if( str == 'reply' ){
-                    console.log('this.replies:',this.replies[index],' index:',index,' cid:',cid)
+                    // console.log('this.replies:',this.replies[index],' index:',index,' cid:',cid)
                     this.praiseForm.tid = this.replies[index].tid;
                     this.praiseForm.cid = cid;
                     this.praiseForm.uid = this.user;
@@ -180,14 +180,14 @@ export default {
         CbCommentPraise: function(res){     //评论赞的回调接口数据
             // console.log('评论赞的接口数据:',res);
             if( res.data == 1 ){
-                this.changePostPraise(this.reps.cid);
+                this.changePostCommentPraise(this.reps.cid);
                 this.isShow = !this.isShow;
             }else{
                 this.api.getmsg(res);
             }
         },
         CbReplyPraise:function(res){        //回复赞的回调接口数据
-            console.log('回复赞的接口数据: ',res);
+            // console.log('回复赞的接口数据: ',res);
             if( res.data == 1 ){}
         },
         toCommentBox:function(){            //跳转评论组件，传数据

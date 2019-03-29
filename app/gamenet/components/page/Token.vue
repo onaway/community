@@ -33,10 +33,10 @@ export default {
                 this.tokenForm.uid = paramJson.uid;
                 this.tokenForm.access_token = paramJson.access_token;
                 this.tokenForm.game = paramJson.game;
-                console.log(this.tokenForm.game);
+                // console.log(this.tokenForm.game);
                 this.api.setCookie('game',this.tokenForm.game,7);       //设置game的cookie
 
-                // console.log('this.tokenForm',this.tokenForm);
+                console.log('this.tokenForm',this.tokenForm);
                 if( this.token ){
                     this.api.post('community.user.login.gettoken',this.tokenForm,this.CbToken);
                 }
@@ -62,7 +62,7 @@ export default {
         },
         getRequest: function(url){          //获取参数
             var theRequest = new Object();
-            console.log('url',url);
+            // console.log('url',url);
             if (url.indexOf("?") != -1) {
                 var str = url.substr(1);
                 var strs = str.split("&");

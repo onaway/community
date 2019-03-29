@@ -5,7 +5,7 @@ import Toast from '@/components/toast/toast.js'
 // import router from '../router'
 // Vue.use(router)
 
-const version = '1.1.3'       //版本号
+const version = '1.1.8'       //版本号
 
 var clearVersionCookie =  function () {
     var oldver = cookieGet('version');

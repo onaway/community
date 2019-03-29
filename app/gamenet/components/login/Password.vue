@@ -96,7 +96,7 @@ export default {
             this.api.post('community.user.login.sendMessage',this.form,this.CbSendCode);
         },
         CbSendCode: function (res){         //发送验证码回调的接口数据
-            console.log('res:',res);
+            // console.log('res:',res);
             if( res.code == 1 ){
                 this.yzm1 = false;          //获取验证码按钮隐藏
                 this.time = true;           //60s倒计时显示
@@ -137,7 +137,6 @@ export default {
                                     Toast('密码为6-16位字符');
                                 }else{
                                     this.form.password = this.api.SHA1(password);
-                                    console.log('form:',this.form);
                                     this.api.post('community.user.login.resetPassword',this.form,this.CbPassword);
                                 }
                             }
@@ -147,7 +146,7 @@ export default {
             }
         },
         CbPassword: function (res) {        //确认修改接口回调
-            console.log('确认修改数据:',res);
+            // console.log('确认修改数据:',res);
             if( res.code == 1 ){
                 this.$router.push({path: '/login'});
             }else{

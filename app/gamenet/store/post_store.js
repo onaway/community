@@ -104,9 +104,10 @@ export default {
                 let cids = state.comment.map( item => item.cid );   //获取cid的数组集合
                 let num = cids.indexOf(becid);        //获取becid在cid数组中的索引,即是在state.postReply中的索引
                 let replies = state.postReply[num];   //获取这个cid回复的数组集合
-                // console.log('num:',num,' replies:',replies);
+                // console.log('cids:',cids,' num:',num,' replies:',replies);
                 let replyCids = replies.map(item=>item.cid);    
                 let index = replyCids.indexOf(_cid);  //若此cid在reply数组中存在，则删除，否则不操作
+                // console.log('replyCids:',replyCids,' index:',index);
                 if( index > -1 ){       //数据存在才删除
                     state.postReply[num].splice(index,1);
                 }

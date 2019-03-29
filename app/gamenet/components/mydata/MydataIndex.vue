@@ -12,7 +12,8 @@
                     <img :src="changeSrc()">
                     <input ref="photoUpload" @change="handlePhotoUpload" type="file" accept="image/*" class="hide" value="file">
                 </li>
-                <li><em>账号</em><span class="tel">{{ account(form.phone,form.passport) }}</span></li>
+                <li><em>账号</em><span class="tel">{{ showAccount(form.passport) }}</span></li>
+                <li><em>手机号</em><span class="tel">{{ showTel(form.phone) }}</span></li>
                 <!-- <li> -->
                 <router-link :to="{ name:'MyName',query:{ uname:form.uname } }" tag="li">   <!-- tag="li"会渲染为li标签 -->
                     <em>用户名</em>
@@ -129,7 +130,7 @@ export default {
     methods: {
         ...mapActions(['clearPersonalData','clearHomeData','clearPersonalData']),
         CbMyDada: function(res){        //我的资料接口数据
-            console.log('我的资料数据',res.data);
+            // console.log('我的资料数据',res.data);
             if( res.code == 1 ){
                 this.form = res.data;
             }else if( res.code == -66665 ){
@@ -375,10 +376,11 @@ export default {
                 return '';
             }
         },
-        account: function(phone,passport){      //显示账号是手机号还是欢动账号
-            if( phone && !passport ) return phone;
-            if( !phone && passport ) return passport;
-            // if( phone && passport ) return phone;
+        showAccount: function(account){ //显示账号
+            if( account ) return account;
+        },
+        showTel: function(tel){         //显示手机号
+            if( tel ) return tel.substr(0,3) + "****" + tel.substr(7);
         },
         chooseSex: function(){          //显示选择性别盒子
             this.showSex = true;

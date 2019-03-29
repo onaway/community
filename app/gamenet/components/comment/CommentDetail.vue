@@ -8,7 +8,7 @@
 
         <!-- 举报分享收藏删除组件 -->
         <transition name="fade" mode="out-in">
-            <tip-item v-show="isShow" :tipData="detailData.main" @transferval="transferValue" @hidetip="hideTipItem"></tip-item>
+            <tip-item class="tip-item" v-show="isShow" :tipData="detailData.main" @transferval="transferValue" @hidetip="hideTipItem"></tip-item>
         </transition>
 
         <!-- <share></share> -->
@@ -120,7 +120,7 @@ export default {
         next();
     },
     computed:{
-        ...mapGetters(['wxShareShow','detailData','detailReply','datailPage'])
+        ...mapGetters(['wxShareShow','detailData','detailReply','datailPage','isCommentLoadmore'])
     },
     created () {
         let _url = this.$route.query.uid;            //获取uid对象数据
@@ -141,10 +141,10 @@ export default {
         }else{      //有数据
             this.initPage = true;
             this.commentForm.page = this.datailPage;
-            if( this.detailReply.length < (10*this.commentForm.page) ){     
-                this.$refs.infiniteLoading.$emit('$InfiniteLoading:loaded');  
+            if( this.isCommentLoadmore ){       //若本来就到底了，则返回时不上拉加载
+                this.$refs.infiniteLoading.$emit('$InfiniteLoading:loaded');
                 this.$refs.infiniteLoading.$emit('$InfiniteLoading:complete');
-            } 
+            }
         }
 
         let desc = '';
@@ -156,7 +156,7 @@ export default {
         },300)
     },
     methods: {
-        ...mapActions(['setCommentData','setDetailData','clearDetailData','setComingRouter','reduceComment','changePostCommentPraise']),
+        ...mapActions(['setCommentData','setDetailData','clearDetailData','setComingRouter','reduceComment','changePostCommentPraise','setCommentLoadStatus']),
         getDataList: function(){
             this.commentForm.page = 1;
             this.api.post('community.data.detail.getcomm',this.commentForm,this.CbDetailData);
@@ -171,8 +171,7 @@ export default {
             },500)
         },
         CbDetailData:function(res){     //接口数据
-            console.log('评论详情页数据：',res.data);
-            
+            // console.log('评论详情页数据：',res.data);
             if (res.code == 1) {            // 如果查询结果为真
                 this.initPage = true;
                 if (res.data.reply.length) {       // 如果有数据则进入将新的数据与老的数据拼接
@@ -184,17 +183,25 @@ export default {
                     this.watchZan();
                     this.watchMark();
                     this.watchOfficial();
-                    console.log('detailReply:',this.detailReply);
+                    // console.log('detailReply:',this.detailReply);
                     this.$refs.infiniteLoading.$emit('$InfiniteLoading:loaded');    //$emit触发$InfiniteLoading:loaded事件
                     if( this.detailReply.length < (10*this.commentForm.page) ){        //如果帖子总条数小于10*页数则数据加载完成
                         this.$refs.infiniteLoading.$emit('$InfiniteLoading:complete');
+                        this.setCommentLoadStatus();
                     }  
                 }else{
                     if( this.detailReply.length > 0 ){
                         this.$refs.infiniteLoading.$emit('$InfiniteLoading:loaded');
+                    }else{
+                        this.setDetailData({data:res.data,type:'refresh',page:this.commentForm.page})      //只有帖子正文，没有评论的情况
                     }
                     this.$refs.infiniteLoading.$emit('$InfiniteLoading:complete'); //没有数据显示没有更多
                 }
+
+                // if( this.detailReply.length < (10*this.commentForm.page) ){     
+                //     this.$refs.infiniteLoading.$emit('$InfiniteLoading:loaded');  
+                //     this.$refs.infiniteLoading.$emit('$InfiniteLoading:complete');
+                // } 
             }else if( res.code == -20010 ){
                 this.showError = true;
             }
@@ -276,7 +283,7 @@ export default {
             }
         },
         CbCommentPraise: function(res){  //评论赞的接口数据
-            // console.log(res);
+            // console.log('res:',res);
             if( res.data == 1 ){
                 this.changePostCommentPraise(this.detailData.main.cid);     //将cid存至vuex中进行数据操作
                 if( this.isTrue ){
@@ -345,6 +352,9 @@ export default {
     }
     .fade-enter, .fade-leave-active {
         opacity: 0
+    }
+    .tip-item{
+        position: fixed;
     }
 </style>
 

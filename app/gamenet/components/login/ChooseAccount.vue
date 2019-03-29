@@ -50,16 +50,11 @@ export default {
     created() {
         this.account_info = this.api.getCookie('account_info');
         this.mobile_info = this.api.getCookie('mobile_info');
-        console.log('account_info:',this.account_info);
-        console.log('mobile_info:',this.mobile_info);
         this.telForm.mobile_phone = this.mobile_info.mobile_phone;
         this.hdForm.account = this.account_info.account;
         let password = this.api.getCookie('password');
-        console.log('password:',password);
         this.telForm.password = password;
         this.hdForm.password = password;
-        console.log('telForm:',this.telForm);
-        console.log('hdForm:',this.hdForm);
     },
     methods: {
         goBack: function(){         //如果有历史记录则返回上一页，否则返回主页
@@ -79,12 +74,10 @@ export default {
         setAccount(){               //选择账号
             this.border1 = true;
             this.border2 = false;
-            console.log('choose1:',this.choose);
         },
         setMobile(){                //选择手机号
             this.border1 = false;
             this.border2 = true;
-            console.log('choose2:',this.choose);
         },
         confirm(){                  //确定登录
             if( this.choose == 'account' ){
@@ -94,7 +87,7 @@ export default {
             }
         },
         CbAccountLogin(res){        //账号登录接口回调
-            console.log('res:',res);
+            // console.log('res:',res);
             if( res.code == 1 ){    
                 let uidJson = {};
                 uidJson.uid = res.data.uid;
@@ -102,17 +95,23 @@ export default {
                 this.api.setCookie('uid',_uidJson,7);          //设置uid cookie
                 this.api.setCookie('myuser',res.data.token,7); //设置token cookie
                 this.api.setCookie('bind_phone_account',res.data.account,1);  //绑定手机需要的账号
-                if( res.data.new_account ){         //若账号强制修改
+                /*if( res.data.new_account ){         //若账号强制修改
                     this.api.setCookie('login_account',res.data.new_account,7)   //存修改过的账号
                     this.api.setCookie('login_info',res.data,7)       //存‘账号名已修改’页面需要的的信息
                     this.$router.push({name: 'ResetAccount'});
+                }*/
+                this.api.setCookie('login_account',res.data.account,7)   //存修改过的账号
+                if( res.data.bind_phone == 0 ){ 
+                    this.$router.push({name: 'Authentication'});
+                }else{
+                    this.$router.push({name: 'Home'});
                 }
             }else{
                 this.api.getmsg(res);
             }
         },
         CbTelLogin(res){            //手机号登录接口回调
-            console.log('res:',res);
+            // console.log('res:',res);
             if( res.code == 1 ){    
                 let uidJson = {};
                 uidJson.uid = res.data.uid;
@@ -120,12 +119,13 @@ export default {
                 this.api.setCookie('uid',_uidJson,7);          //设置uid cookie
                 this.api.setCookie('myuser',res.data.token,7); //设置token cookie
                 this.api.setCookie('login_account',res.data.phone_num,7)   //存登录的手机号
-                if( res.data.new_account ){         //若账号强制修改
+                /*if( res.data.new_account ){         //若账号强制修改
                     this.api.setCookie('login_info',res.data,7)       //存‘账号名已修改’页面需要的的信息
                     this.$router.push({name: 'ResetAccount'});
                 }else{          //若本身的账号没有修改
                     this.$router.push({name: 'Home'});
-                }
+                }*/
+                this.$router.push({name: 'Home'});
             }else{
                 this.api.getmsg(res);
             }

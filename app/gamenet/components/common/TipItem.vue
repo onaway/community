@@ -56,18 +56,22 @@ export default {
         },
     },
     methods: {
-        ...mapActions(['changeWxStatus','setCommentData','delOneHomeData','delOnePostData','changeHomeCollect','changePersonalCollect']),
+        ...mapActions(['changeWxStatus','setCommentData','delOneHomeData','delOnePersonalData','delOnePostData',
+        'delMessageData','changeHomeCollect','changePersonalCollect','delMessageReply']),
         watchCollection: function(){//监听是否收藏
             this.api.in_array;
             if( this.collection == undefined ){
                 this.isShow = false;
             }else{
                 this.isShow = true;
-                if(this.api.in_array(this.tipData.tid,this.collection)){    
-                    this.collectContent = '取消收藏';
-                    // console.log('this.collectContent:',this.collectContent);
+                if(this.api.in_array(this.tipData.tid,this.collection)){
+                    setTimeout(()=>{
+                        this.collectContent = '取消收藏';
+                    },500)
                 }else{
-                    this.collectContent = '收藏';
+                    setTimeout(()=>{
+                        this.collectContent = '收藏';
+                    },500)
                 }
             }
         },
@@ -83,23 +87,25 @@ export default {
             } 
         },
         CbCollectionData: function(res){
-            // console.log('收藏接口数据：',res);
+            // console.log('点击收藏接口数据：',res);
             if( res.code == 1 ){
                 this.changeHomeCollect(this.tipData.tid);           //改变首页收藏的文字
                 this.changePersonalCollect(this.tipData.tid);       //改变个人中心页收藏的文字
                 if( this.collectContent == "收藏" ){
                     setTimeout(()=>{
                         this.collectContent = '取消收藏';
-                    },500)
+                    },500);
+                    
                     this.$emit('hidetip');      //隐藏本组件
                     this.$emit('addcol');       //个人中心我（他）的收藏的数量+1
                     Toast('收藏成功');
                 }else{
                     setTimeout(()=>{
                         this.collectContent = '收藏';
-                    },500)
+                    },500);
+                    
                     this.$emit('hidetip');
-                    this.$emit('reducecol');       //个人中心我（他）的收藏的数量-1
+                    this.$emit('reducecol');    //个人中心我（他）的收藏的数量-1
                     Toast('取消收藏成功');
                 }
             }else{
@@ -197,12 +203,16 @@ export default {
                     // console.log('index2:',this.index);
                     this.$emit('deltop',this.index);
                     this.$emit('reducetop');             //个人中心我的话题数量减一的自定义事件
+                    this.delOneHomeData(this.tipData.tid);
                 }else{
                     if( this.$route.name == 'PostText' ){
                         this.delOneHomeData(this.tipData.tid);
+                        this.delOnePersonalData(this.tipData.tid);
+                        this.delMessageData(this.tipData.tid);
                     }
                     if( this.$route.name == 'CommentDetail' ){
                         this.delOnePostData(this.tipData.cid);  //删除帖子详情页的评论
+                        this.delMessageReply(this.tipData.cid);
                     }
                     setTimeout(()=>{
                         this.$router.go(-1);
@@ -225,7 +235,7 @@ export default {
 
 <style lang="scss" scoped>
     .tip-item{
-        position: fixed;
+        // position: fixed;
         right: 0.1rem;
         top: 1rem;
         width: 1.6rem;
@@ -250,7 +260,6 @@ export default {
             }
         } 
     }
-    
 </style>
 
 

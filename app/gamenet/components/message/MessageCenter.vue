@@ -47,13 +47,12 @@ export default {
         };
     },
     beforeRouteLeave(to, from, next) {
-        if( to.name == 'CommentBox' ){
-            this.setComingRouter('MessageCenter');
-        }
+        if( to.name == 'CommentBox' )this.setComingRouter('MessageCenter');
+        if( to.name == 'Home' )this.clearNoticeData();
         next();
     },
     computed: {
-        ...mapGetters(['noticeData','notice','noticePage'])  
+        ...mapGetters(['noticeData','notice','noticePage','isMsgLoadmore'])  
     },
     created() {
         this.user = this.api.islogin();
@@ -65,12 +64,15 @@ export default {
         }else{      //有数据
             this.initPage = true;
             this.form.page = this.noticePage;
-            if( this.notice.length < (10*this.form.page) ){      
+            if( this.isMsgLoadmore ){       //若本来就到底了，则返回时不上拉加载
                 this.$refs.infiniteLoading.$emit('$InfiniteLoading:loaded');
                 this.$refs.infiniteLoading.$emit('$InfiniteLoading:complete');
             }
         }
         this.watchMark();
+        setTimeout(()=>{        //发送消息，给后端提示清除已被删除的评论
+            this.api.post('community.data.detail.clearMsg',{uid:this.user,game:1},this.CbClearMsg);
+        },3000)
 
         // let title = '三国战纪--社区';
         let desc = '20年经典，正版授权，热血格斗，纯正街机手游';
@@ -84,7 +86,8 @@ export default {
         }
     },
     methods: {
-        ...mapActions(['setNoticeData','clearNoticeData','setComingRouter']),
+        ...mapActions(['setNoticeData','clearNoticeData','setComingRouter','setMessageLoadStatus']),
+        CbClearMsg: function(res){},
         getDataList: function(){            //获取接口数据
             this.form.page = 1;
             this.api.post('community.data.detail.msgIndex',this.form,this.CbNoticeData);
@@ -99,8 +102,7 @@ export default {
             },500)
         },
         CbNoticeData:function(res){         //接口数据
-            console.log('消息中心数据：',res.data);
-
+            // console.log('消息中心数据：',res.data);
             if (res.code == 1) {            // 如果查询结果为真
                 this.initPage = true;
                 if (res.data.return.length) {       // 如果有数据则进入将新的数据与老的数据拼接
@@ -114,6 +116,7 @@ export default {
                     this.$refs.infiniteLoading.$emit('$InfiniteLoading:loaded');     //$emit触发$InfiniteLoading:loaded事件
                     if( this.notice.length < (10*this.form.page) ){       //如果帖子总条数小于10*页数则数据加载完成
                         this.$refs.infiniteLoading.$emit('$InfiniteLoading:complete');
+                        this.setMessageLoadStatus();
                     }
                 }else{
                     if( this.notice.length > 0 ){
@@ -121,6 +124,11 @@ export default {
                     }
                     this.$refs.infiniteLoading.$emit('$InfiniteLoading:complete'); //没有数据显示没有更多
                 }
+
+                // if( this.notice.length < (10*this.form.page) ){      
+                //     this.$refs.infiniteLoading.$emit('$InfiniteLoading:loaded');
+                //     this.$refs.infiniteLoading.$emit('$InfiniteLoading:complete');
+                // }
             }
         },
         loadTop: function(){                //组件提供的下拉触发方法
